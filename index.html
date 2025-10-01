@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Platform</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <h1>Welcome Back</h1>
+            <p>Sign in to your chatbot platform</p>
+            <div class="form-group">
+                <label class="form-label" for="email">Email</label>
+                <input type="email" id="email" class="form-control" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="password">Password</label>
+                <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+            </div>
+            <button id="loginBtn" class="btn btn--primary btn--full-width">Sign In</button>
+        </div>
+    </div>
+
+    <!-- Dashboard -->
+    <div id="dashboard" class="dashboard hidden">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1>Chatbots</h1>
+                <button id="createBotBtn" class="btn btn--primary">Create Chatbot</button>
+            </div>
+            
+            <div id="botsGrid" class="bots-grid">
+                <!-- Bot cards will be dynamically inserted here -->
+            </div>
+
+            <div id="emptyState" class="empty-state hidden">
+                <h3>No chatbots yet</h3>
+                <p>Create your first chatbot to get started</p>
+                <button class="btn btn--primary create-first-bot">Create Chatbot</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bot Creation/Editing Form -->
+    <div id="botForm" class="bot-form-container hidden">
+        <div class="container">
+            <div class="form-header">
+                <h2 id="formTitle">Create Chatbot</h2>
+                <button id="backToDashboard" class="btn btn--outline">Back to Dashboard</button>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="basic">Basic Information</button>
+                <button class="tab-btn" data-tab="knowledge">Knowledge Sources</button>
+                <button class="tab-btn" data-tab="instructions">Instructions & Rules</button>
+                <button class="tab-btn" data-tab="openai">OpenAI Configuration</button>
+                <button class="tab-btn" data-tab="leads">Lead Collection</button>
+                <button class="tab-btn" data-tab="embed">Embed & Deploy</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Basic Information Tab -->
+                <div id="basicTab" class="tab-panel active">
+                    <div class="form-group">
+                        <label class="form-label" for="botName">Bot Name *</label>
+                        <input type="text" id="botName" class="form-control" placeholder="Enter bot name" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="welcomeMessage">Welcome Message</label>
+                        <textarea id="welcomeMessage" class="form-control" rows="3" maxlength="250" placeholder="Enter welcome message (max 250 characters)"></textarea>
+                        <div class="char-count">0/250</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="behaviorGoal">Behavior/Goal</label>
+                        <select id="behaviorGoal" class="form-control">
+                            <option value="">Select behavior</option>
+                            <option value="Lead Generation">Lead Generation</option>
+                            <option value="Customer Support">Customer Support</option>
+                            <option value="FAQ Assistant">FAQ Assistant</option>
+                            <option value="General Information">General Information</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Knowledge Sources Tab -->
+                <div id="knowledgeTab" class="tab-panel">
+                    <div class="form-group">
+                        <label class="form-label">File Upload</label>
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <div class="upload-icon">📁</div>
+                            <p>Drag and drop files here or click to browse</p>
+                            <small>Supported: PDF, DOCX, TXT, CSV</small>
+                            <input type="file" id="fileInput" multiple accept=".pdf,.docx,.txt,.csv" hidden>
+                        </div>
+                    </div>
+                    <div id="uploadedFiles" class="uploaded-files"></div>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="urlInput">Add URL</label>
+                        <div class="url-input-group">
+                            <input type="url" id="urlInput" class="form-control" placeholder="https://example.com">
+                            <button id="addUrlBtn" class="btn btn--primary">Add</button>
+                        </div>
+                    </div>
+                    <div id="addedUrls" class="added-urls"></div>
+                </div>
+
+                <!-- Instructions & Rules Tab -->
+                <div id="instructionsTab" class="tab-panel">
+                    <div class="form-group">
+                        <label class="form-label" for="botPersona">Bot Persona</label>
+                        <textarea id="botPersona" class="form-control" rows="3" placeholder="Describe your bot's personality and tone"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="primaryGoal">Primary Goal</label>
+                        <select id="primaryGoal" class="form-control">
+                            <option value="">Select primary goal</option>
+                            <option value="Generate leads">Generate leads</option>
+                            <option value="Provide support">Provide support</option>
+                            <option value="Answer questions">Answer questions</option>
+                            <option value="Custom">Custom</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="behaviorInstructions">Behavior Instructions</label>
+                        <textarea id="behaviorInstructions" class="form-control" rows="4" placeholder="Detailed instructions for how the bot should behave"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="blockedTopics">Blocked Topics</label>
+                        <input type="text" id="blockedTopics" class="form-control" placeholder="Enter comma-separated topics to avoid">
+                    </div>
+                </div>
+
+                <!-- OpenAI Configuration Tab -->
+                <div id="openaiTab" class="tab-panel">
+                    <div class="form-group">
+                        <label class="form-label" for="apiKey">OpenAI API Key *</label>
+                        <div class="password-input">
+                            <input type="password" id="apiKey" class="form-control" placeholder="sk-..." required>
+                            <button type="button" class="password-toggle" id="toggleApiKey">👁️</button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="modelSelection">Model</label>
+                        <select id="modelSelection" class="form-control">
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                            <option value="gpt-4">GPT-4</option>
+                            <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="maxTokens">Max Tokens: <span id="tokenValue">500</span></label>
+                        <input type="range" id="maxTokens" class="slider" min="100" max="2000" value="500">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="dailyLimit">Daily Message Limit</label>
+                        <input type="number" id="dailyLimit" class="form-control" min="1" max="10000" value="1000">
+                    </div>
+                </div>
+
+                <!-- Lead Collection Tab -->
+                <div id="leadsTab" class="tab-panel">
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="enableLeadCollection">
+                            <span class="checkmark"></span>
+                            Enable Lead Collection
+                        </label>
+                    </div>
+                    <div id="leadFormOptions" class="lead-form-options">
+                        <div class="form-group">
+                            <label class="form-label">Lead Form Fields</label>
+                            <div class="checkbox-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="leadFields" value="Name">
+                                    <span class="checkmark"></span>
+                                    Name
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="leadFields" value="Email">
+                                    <span class="checkmark"></span>
+                                    Email
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="leadFields" value="Phone">
+                                    <span class="checkmark"></span>
+                                    Phone
+                                </label>
+                                <label class="checkbox-label">
+                                    <input type="checkbox" name="leadFields" value="Company">
+                                    <span class="checkmark"></span>
+                                    Company
+                                </label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="emailNotifications">
+                                <span class="checkmark"></span>
+                                Email Notifications
+                            </label>
+                        </div>
+                        <div class="form-group" id="notificationEmailGroup">
+                            <label class="form-label" for="notificationEmail">Notification Email</label>
+                            <input type="email" id="notificationEmail" class="form-control" placeholder="your@email.com">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Embed & Deploy Tab -->
+                <div id="embedTab" class="tab-panel">
+                    <div class="embed-section">
+                        <div class="embed-code-section">
+                            <label class="form-label">Embed Code</label>
+                            <div class="code-container">
+                                <pre><code id="embedCode"></code></pre>
+                                <button id="copyEmbedCode" class="btn btn--outline btn--sm copy-btn">Copy</button>
+                            </div>
+                        </div>
+                        
+                        <div class="widget-customization">
+                            <h4>Widget Customization</h4>
+                            <div class="form-group">
+                                <label class="form-label" for="widgetPosition">Position</label>
+                                <select id="widgetPosition" class="form-control">
+                                    <option value="bottom-right">Bottom Right</option>
+                                    <option value="bottom-left">Bottom Left</option>
+                                    <option value="center">Center</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="widgetSize">Size</label>
+                                <select id="widgetSize" class="form-control">
+                                    <option value="small">Small</option>
+                                    <option value="medium">Medium</option>
+                                    <option value="large">Large</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="chat-preview">
+                            <h4>Live Preview</h4>
+                            <div class="chat-widget-preview">
+                                <div class="chat-header">
+                                    <span id="previewBotName">Chatbot</span>
+                                    <span class="status-indicator"></span>
+                                </div>
+                                <div class="chat-messages" id="previewMessages">
+                                    <div class="message bot-message">
+                                        <span id="previewWelcomeMessage">Hi! How can I help you today?</span>
+                                    </div>
+                                </div>
+                                <div class="chat-input-area">
+                                    <input type="text" placeholder="Type your message..." disabled>
+                                    <button disabled>Send</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button id="saveBotBtn" class="btn btn--primary">Save Chatbot</button>
+                <button id="cancelBtn" class="btn btn--outline">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Delete Confirmation -->
+    <div id="deleteModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Delete Chatbot</h3>
+            <p>Are you sure you want to delete this chatbot? This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button id="confirmDelete" class="btn btn--primary">Delete</button>
+                <button id="cancelDelete" class="btn btn--outline">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
