@@ -335,5 +335,119 @@
     <div id="notifications" class="notifications-container"></div>
 
     <script src="app.js"></script>
+
+    <!-- Chatbot Widget -->
+<script>
+(function() {
+    var chatbot = {
+        botId: 'bot-1759319623447',
+        botName: 'null',
+        welcomeMessage: 'null',
+        apiEndpoint: 'https://your-netlify-site.netlify.app/.netlify/functions/chatbot-api',
+        
+        init: function() {
+            this.createWidget();
+            this.bindEvents();
+        },
+        
+        createWidget: function() {
+            var widget = document.createElement('div');
+            widget.innerHTML = `
+                <div id="chatbot-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000; font-family: Inter, sans-serif;">
+                    <div id="chat-toggle" style="background: #218D8D; color: white; border: 2px solid #000; border-radius: 50px; padding: 12px 20px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
+                        <span style="font-size: 18px;">💬</span>
+                        <span>Chat with us!</span>
+                    </div>
+                    <div id="chat-window" style="position: absolute; bottom: 70px; right: 0; width: 350px; height: 450px; background: white; border: 3px solid #000; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); display: none; flex-direction: column; overflow: hidden;">
+                        <div style="background: #218D8D; color: white; padding: 16px; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #000;">
+                            <h4 style="margin: 0; font-size: 16px; font-weight: bold;">${this.botName}</h4>
+                            <button id="chat-close" style="background: none; border: none; color: white; font-size: 20px; cursor: pointer; padding: 0; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 6px;">×</button>
+                        </div>
+                        <div id="chat-messages" style="flex: 1; padding: 16px; overflow-y: auto;">
+                            <div style="margin-bottom: 12px;">
+                                <div style="padding: 8px 12px; border-radius: 8px; font-size: 14px; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(94, 82, 64, 0.2); color: #000;">
+                                    ${this.welcomeMessage}
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; padding: 16px; border-top: 2px solid rgba(94, 82, 64, 0.2); gap: 8px;">
+                            <input id="chat-input" type="text" placeholder="Type your message..." style="flex: 1; padding: 8px 12px; border: 2px solid rgba(94, 82, 64, 0.3); border-radius: 8px; font-size: 14px; color: #000; background: white;">
+                            <button id="chat-send" style="padding: 8px 16px; background: #218D8D; color: white; border: 2px solid #218D8D; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 14px;">Send</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(widget);
+        },
+        
+        bindEvents: function() {
+            var toggle = document.getElementById('chat-toggle');
+            var window = document.getElementById('chat-window');
+            var close = document.getElementById('chat-close');
+            var input = document.getElementById('chat-input');
+            var send = document.getElementById('chat-send');
+            
+            toggle.onclick = function() {
+                window.style.display = window.style.display === 'none' ? 'flex' : 'none';
+            };
+            
+            close.onclick = function() {
+                window.style.display = 'none';
+            };
+            
+            send.onclick = function() {
+                chatbot.sendMessage();
+            };
+            
+            input.onkeypress = function(e) {
+                if (e.key === 'Enter') {
+                    chatbot.sendMessage();
+                }
+            };
+        },
+        
+        sendMessage: function() {
+            var input = document.getElementById('chat-input');
+            var messages = document.getElementById('chat-messages');
+            var message = input.value.trim();
+            
+            if (message) {
+                // Add user message
+                messages.innerHTML += `
+                    <div style="margin-bottom: 12px; text-align: right;">
+                        <div style="display: inline-block; padding: 8px 12px; border-radius: 8px; font-size: 14px; background: #218D8D; color: white; max-width: 80%;">
+                            ${message}
+                        </div>
+                    </div>
+                `;
+                
+                input.value = '';
+                messages.scrollTop = messages.scrollHeight;
+                
+                // Simulate bot response
+                setTimeout(function() {
+                    messages.innerHTML += `
+                        <div style="margin-bottom: 12px;">
+                            <div style="padding: 8px 12px; border-radius: 8px; font-size: 14px; background: rgba(59, 130, 246, 0.08); border: 1px solid rgba(94, 82, 64, 0.2); color: #000;">
+                                Thanks for your message! I'm here to help you with any questions.
+                            </div>
+                        </div>
+                    `;
+                    messages.scrollTop = messages.scrollHeight;
+                }, 1000);
+            }
+        }
+    };
+    
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            chatbot.init();
+        });
+    } else {
+        chatbot.init();
+    }
+})();
+</script>
+    
 </body>
 </html>
