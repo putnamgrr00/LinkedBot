@@ -32,22 +32,29 @@ async loadData() {
         }
 
         const text = await response.text();
-let data = [];
-try {
-    if (text && text.trim().startsWith('[')) {
-        data = JSON.parse(text);
-    } else if (text && text.trim().startsWith('{')) {
-        data = [JSON.parse(text)];
+        let data = [];
+        try {
+            if (text && text.trim().startsWith('[')) {
+                data = JSON.parse(text);
+            } else if (text && text.trim().startsWith('{')) {
+                data = [JSON.parse(text)];
+            }
+            // If text is empty or doesn't match, leave data as []
+        } catch (error) {
+            console.error('Failed to parse bots JSON:', error);
+            data = [];
+        }
+        this.bots = Array.isArray(data) ? data : [];
+        this.renderCurrentView();
+
+    } catch (error) {
+        console.error('Failed to load bots:', error);
+        this.showNotification('Failed to load bots. Please refresh.', 'error');
+        this.bots = [];
+        this.renderCurrentView();
     }
-    // If text is empty or doesn't match, leave data as []
-} catch (error) {
-    console.error('Failed to parse bots JSON:', error);
-    data = [];
 }
-this.bots = Array.isArray(data) ? data : [];
-this.renderCurrentView();
-    }
-}
+
 
     async saveBot(botData) {
         try {
