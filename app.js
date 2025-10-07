@@ -68,7 +68,6 @@ class ChatbotBuilder {
     body: JSON.stringify({ id: botId, ...updates }) // must include 'id'
 })
 
-            });
             
             if (!response.ok) throw new Error('Failed to update bot');
             const updatedBot = await response.json();
