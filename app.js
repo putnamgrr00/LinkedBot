@@ -25,7 +25,7 @@ class ChatbotBuilder {
     // ======================
     async loadData() {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/api/bots/${this.currentUserId}`);
+            const response = await fetch(`${this.apiBaseUrl}/bots/${this.currentUserId}`);
             const data = await response.json();
             this.bots = data;
             this.renderCurrentView();
@@ -41,7 +41,7 @@ class ChatbotBuilder {
         try {
             botData.user_id = this.currentUserId;
             
-            const response = await fetch(`${this.apiBaseUrl}/api/bots`, {
+            const response = await fetch(`${this.apiBaseUrl}/bots`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(botData)
@@ -62,7 +62,7 @@ class ChatbotBuilder {
 
     async updateBot(botId, updates) {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/api/bots/${botId}`, {
+            const response = await fetch(`${this.apiBaseUrl}/bots/${botId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(updates)
@@ -88,7 +88,7 @@ class ChatbotBuilder {
 
     async deleteBot(botId) {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/api/bots/${botId}`, {
+            const response = await fetch(`${this.apiBaseUrl}/bots/${botId}`, {
                 method: 'DELETE'
             });
             
