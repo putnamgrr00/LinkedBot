@@ -3,8 +3,14 @@
   "version": "1.0.0",
   "description": "Chatbot builder backend API",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.38.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }
