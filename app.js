@@ -25,7 +25,7 @@ class ChatbotBuilder {
     // ======================
     async loadData() {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/bots/${this.currentUserId}`);
+            const response = await fetch(`${this.apiBaseUrl}/bots?user_id=${this.currentUserId}`);
             const data = await response.json();
             this.bots = data;
             this.renderCurrentView();
@@ -62,10 +62,12 @@ class ChatbotBuilder {
 
     async updateBot(botId, updates) {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/bots/${botId}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updates)
+            const response = await fetch(`${this.apiBaseUrl}/bots`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: botId, ...updates }) // must include 'id'
+})
+
             });
             
             if (!response.ok) throw new Error('Failed to update bot');
@@ -88,9 +90,11 @@ class ChatbotBuilder {
 
     async deleteBot(botId) {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/bots/${botId}`, {
-                method: 'DELETE'
-            });
+            const response = await fetch(`${this.apiBaseUrl}/bots`, {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ id: botId })
+});
             
             if (!response.ok) throw new Error('Failed to delete bot');
             
@@ -106,7 +110,7 @@ class ChatbotBuilder {
 
     async loadLeads(botId) {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/api/leads/${botId}`);
+            const response = await fetch(`${this.apiBaseUrl}/leads/${botId}`);
             const leads = await response.json();
             this.leads = leads;
             return leads;
@@ -119,7 +123,7 @@ class ChatbotBuilder {
 
     async loadMessages(botId) {
         try {
-            const response = await fetch(`${this.apiBaseUrl}/api/messages/${botId}`);
+            const response = await fetch(`${this.apiBaseUrl}/messages/${botId}`);
             const messages = await response.json();
             this.messages = messages;
             return messages;
@@ -136,7 +140,7 @@ class ChatbotBuilder {
         formData.append('bot_id', botId);
 
         try {
-            const response = await fetch(`${this.apiBaseUrl}/api/upload`, {
+            const response = await fetch(`${this.apiBaseUrl}/upload`, {
                 method: 'POST',
                 body: formData
             });
