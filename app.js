@@ -24,36 +24,37 @@ class ChatbotBuilder {
     // API METHODS
     // ======================
 async loadData() {
+const response = await fetch(`${this.apiBaseUrl}/bots?user_id=${this.currentUserId}`);
+
+if (!response.ok) {
+    throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+}
+
+const text = await response.text();
+let data = [];
+
+if (text && text.trim().length > 0) {
     try {
-        const response = await fetch(`${this.apiBaseUrl}/bots?user_id=${this.currentUserId}`);
-
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+        if (text.trim().startsWith('[')) {
+            data = JSON.parse(text);
+        } else if (text.trim().startsWith('{')) {
+            data = [JSON.parse(text)];
         }
-
-        const text = await response.text();
-        let data = [];
-        try {
-            if (text && text.trim().startsWith('[')) {
-                data = JSON.parse(text);
-            } else if (text && text.trim().startsWith('{')) {
-                data = [JSON.parse(text)];
-            }
-            // If text is empty or doesn't match, leave data as []
-        } catch (error) {
-            console.error('Failed to parse bots JSON:', error);
-            data = [];
-        }
-        this.bots = Array.isArray(data) ? data : [];
-        this.renderCurrentView();
-
     } catch (error) {
-        console.error('Failed to load bots:', error);
-        this.showNotification('Failed to load bots. Please refresh.', 'error');
-        this.bots = [];
-        this.renderCurrentView();
+        console.error('Failed to parse bots JSON:', error);
+        data = [];
     }
 }
+
+// Normalize property so dashboard always works
+data = data.map(bot => ({
+  ...bot,
+  botname: bot.botname || bot.bot_name || "Unnamed Bot"
+}));
+
+this.bots = Array.isArray(data) ? data : [];
+this.renderCurrentView();
+
 
 
     async saveBot(botData) {
