@@ -975,8 +975,8 @@ class ChatbotBuilder {
                     lead_collection: document.getElementById('collectLeads').checked,
                     email_notifications: document.getElementById('emailNotifications').checked,
                     status: 'active',
-                    files: JSON.stringify(this.uploadedFiles),
-                    urls: JSON.stringify(this.scrapedUrls),
+                    files: Array.isArray(this.uploadedFiles) ? this.uploadedFiles : [],
+                    urls: Array.isArray(this.scrapedUrls) ? this.scrapedUrls : [],
                     created_at: editBot ? editBot.created_at : new Date().toISOString()
                 };
 
