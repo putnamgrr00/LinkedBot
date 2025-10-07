@@ -10,7 +10,7 @@ class ChatbotBuilder {
         this.analytics = {};
         this.currentView = 'bots';
         this.currentUserId = 'b4d26ac0-d376-4def-8c92-91bc9e034099';
-        this.apiBaseUrl = 'http://localhost:5000';
+        this.apiBaseUrl = 'https://linkedbot.vercel.app/api';
         this.init();
     }
 
