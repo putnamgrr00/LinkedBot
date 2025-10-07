@@ -19,37 +19,21 @@ class ChatbotBuilder {
 
     // Data Management
     loadData() {
-        const storedBots = localStorage.getItem('chatbots');
-        if (storedBots) {
-            this.bots = JSON.parse(storedBots);
-        } else {
-            // Initialize with sample bot
-            this.bots = [{
-                id: 'bot-001',
-                name: 'Customer Support Assistant',
-                status: 'active',
-                created: '2025-10-01',
-                welcomeMessage: 'Hi! I\'m here to help with your questions about our products and services.',
-                behavior: 'professional_support',
-                persona: 'Friendly and knowledgeable support agent',
-                instructions: 'Always be polite and helpful. Ask for contact information when appropriate.',
-                apiModel: 'gpt-3.5-turbo',
-                maxTokens: 500,
-                dailyLimit: 1000,
-                trainingFiles: ['product-faq.pdf', 'support-guide.docx'],
-                urls: ['https://company.com/help', 'https://company.com/faq'],
-                leadCollection: true,
-                emailNotifications: true,
-                conversations: 247,
-                leads: 32,
-                openaiKey: 'sk-demo123...'
-            }];
-            this.saveData();
-        }
-    }
+fetch('http://localhost:5000/bots/b4d26ac0-d376-4def-8c92-91bc9e034099')
+  .then(response => response.json())
+  .then(bots => {
+    this.bots = bots;
+    this.renderDashboard();
+  })
+  .catch(error => {
+    console.error('Failed to load bots:', error);
+    this.bots = [];
+    this.renderDashboard();
+  });
+
 
     saveData() {
-        localStorage.setItem('chatbots', JSON.stringify(this.bots));
+
     }
 
     // Authentication
