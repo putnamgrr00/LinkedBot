@@ -25,7 +25,7 @@ class ChatbotBuilder {
     // ======================
 async loadData() {
     try {
-        const response = await fetch(`${this.apiBaseUrl}/bots?userid=${this.currentUserId}`);
+        const response = await fetch(`${this.apiBaseUrl}/bots?user_id=${this.currentUserId}`);
 
         if (!response.ok) {
             throw new Error(`HTTP ${response.status} - ${response.statusText}`);
