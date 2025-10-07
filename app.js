@@ -31,18 +31,23 @@ async loadData() {
             throw new Error(`HTTP ${response.status} - ${response.statusText}`);
         }
 
-        const text = await response.text();
-        let data = [];
-        if (text && text.trim().startsWith('[')) {
-            data = JSON.parse(text);
-        }
-        this.bots = Array.isArray(data) ? data : [];
-        this.renderCurrentView();
-    } catch (error) {
-        console.error('Failed to load bots:', error);
-        this.showNotification('Failed to load bots. Please refresh.', 'error');
-        this.bots = [];
-        this.renderCurrentView();
+const text = await response.text();
+let data = [];
+try {
+  if (text && text.trim().startsWith('[')) {
+    data = JSON.parse(text);
+  }
+  // Handles the case where your API returns a single bot object, not an array
+  else if (text && text.trim().startsWith('{')) {
+    data = [JSON.parse(text)];
+  }
+  // Else: data stays as empty array
+} catch(e) {
+  console.error("Failed to parse bots JSON:", e);
+  data = [];
+}
+this.bots = Array.isArray(data) ? data : [];
+this.renderCurrentView();
     }
 }
 
