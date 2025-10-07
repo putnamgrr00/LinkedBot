@@ -26,7 +26,11 @@ class ChatbotBuilder {
     async loadData() {
         try {
             const response = await fetch(`${this.apiBaseUrl}/bots?user_id=${this.currentUserId}`);
-            const data = await response.json();
+            const text = await response.text();
+let data = [];
+if (text.trim()) {
+  data = JSON.parse(text);
+}
             this.bots = data;
             this.renderCurrentView();
         } catch (error) {
