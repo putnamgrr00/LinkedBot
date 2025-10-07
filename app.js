@@ -55,7 +55,7 @@ data = data.map(bot => ({
 this.bots = Array.isArray(data) ? data : [];
 this.renderCurrentView();
 
-
+} 
 
     async saveBot(botData) {
         try {
