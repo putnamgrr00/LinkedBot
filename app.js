@@ -25,17 +25,22 @@ class ChatbotBuilder {
     // ======================
 async loadData() {
     try {
-        const response = await fetch(this.apiBaseUrl + "bots?userid=" + this.currentUserId);
+        const response = await fetch(`${this.apiBaseUrl}/bots?userid=${this.currentUserId}`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status} - ${response.statusText}`);
+        }
+
         const text = await response.text();
         let data = [];
-        if (text.trim()) {
+        if (text && text.trim().startsWith('[')) {
             data = JSON.parse(text);
         }
         this.bots = Array.isArray(data) ? data : [];
         this.renderCurrentView();
     } catch (error) {
-        console.error("Failed to load bots:", error);
-        this.showNotification("Failed to load bots. Please refresh.", "error");
+        console.error('Failed to load bots:', error);
+        this.showNotification('Failed to load bots. Please refresh.', 'error');
         this.bots = [];
         this.renderCurrentView();
     }
