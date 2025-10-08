@@ -31,12 +31,17 @@ async loadData() {
             throw new Error(`HTTP ${response.status} - ${response.statusText}`);
         }
 
-        const text = await response.text();
-        let data = [];
-        if (text && text.trim().startsWith('[')) {
-            data = JSON.parse(text);
-        }
-        this.bots = Array.isArray(data) ? data : [];
+        // Use .json() to get the parsed array directly!
+        const data = await response.json();
+
+        // Normalize botname for the dashboard display
+        this.bots = Array.isArray(data)
+            ? data.map(bot => ({
+                ...bot,
+                botname: bot.bot_name || bot.botname || "Unnamed Bot"
+            }))
+            : [];
+
         this.renderCurrentView();
     } catch (error) {
         console.error('Failed to load bots:', error);
@@ -44,7 +49,7 @@ async loadData() {
         this.bots = [];
         this.renderCurrentView();
     }
-} 
+}
 
     async saveBot(botData) {
         try {
